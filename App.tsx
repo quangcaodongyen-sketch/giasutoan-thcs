@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, GraduationCap, School, Brain, Sparkles, Calculator, PenTool, History, Settings } from 'lucide-react';
+import { BookOpen, GraduationCap, School, Brain, Sparkles, Calculator, PenTool, History, Settings, Lock, User, Key, ArrowRight, AlertCircle } from 'lucide-react';
 import { EducationLevel, QuizState, GradeConfig, QuizResult } from './types';
 import { LEVELS, CURRICULUM, THEMES } from './constants';
 import { generateQuizQuestions } from './services/geminiService';
@@ -15,6 +15,12 @@ const App: React.FC = () => {
   const [grade, setGrade] = useState<number>(6);
   const [topic, setTopic] = useState<string>('');
   const [customTopic, setCustomTopic] = useState<string>('');
+
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
 
   // History State
   const [history, setHistory] = useState<QuizResult[]>([]);
@@ -209,6 +215,94 @@ const App: React.FC = () => {
   }
 
   // --- MAIN RENDER ---
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username === 'VIP1' && password === '12345') {
+      setIsAuthenticated(true);
+      setLoginError('');
+      // Save to session or local storage if persistence is desired, but keeping it simple for now
+    } else {
+      setLoginError('Tên đăng nhập hoặc mật khẩu không chính xác!');
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100 font-sans">
+        <div className="bg-white p-8 md:p-10 rounded-[2rem] shadow-2xl max-w-md w-full animate-fade-in border border-white/50 backdrop-blur-sm relative overflow-hidden">
+          {/* Decorative Pattern */}
+          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-blue-100 to-transparent opacity-50 rounded-bl-full pointer-events-none"></div>
+          
+          <div className="flex flex-col items-center mb-8 relative z-10">
+            <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg transform -rotate-3 mb-4">
+              <Calculator className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-600 text-center">GIA SƯ TOÁN PRO</h1>
+            <p className="text-gray-500 font-medium text-sm mt-2">Vui lòng đăng nhập để sử dụng</p>
+          </div>
+
+          {loginError && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium animate-bounce-short flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 shrink-0" />
+              {loginError}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-6 relative z-10">
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-700 block">Tên đăng nhập</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="block w-full pl-11 pr-4 py-4 bg-gray-50 border-2 border-gray-100 rounded-xl focus:ring-4 focus:ring-blue-50 focus:border-blue-500 outline-none transition-all font-medium text-gray-800 placeholder:text-gray-400"
+                  placeholder="Nhập tên đăng nhập..."
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-700 block">Mật khẩu</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Key className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block w-full pl-11 pr-4 py-4 bg-gray-50 border-2 border-gray-100 rounded-xl focus:ring-4 focus:ring-blue-50 focus:border-blue-500 outline-none transition-all font-medium text-gray-800 placeholder:text-gray-400"
+                  placeholder="Nhập mật khẩu..."
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full flex items-center justify-center gap-2 py-4 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/30 transform transition-all active:scale-[0.98] group"
+            >
+              ĐĂNG NHẬP
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </form>
+          
+          <div className="mt-8 text-center border-t border-gray-100 pt-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-full text-yellow-700 text-xs font-bold">
+              <Lock className="w-3 h-3" />
+              Tài khoản cấp phép riêng
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const renderContent = () => {
     if (quizState.status === 'active') {
