@@ -294,9 +294,14 @@ const App: React.FC = () => {
           </form>
           
           <div className="mt-8 text-center border-t border-gray-100 pt-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-full text-yellow-700 text-xs font-bold">
-              <Lock className="w-3 h-3" />
-              Tài khoản cấp phép riêng
+            <div className="inline-flex flex-col items-center gap-3">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-full text-yellow-700 text-xs font-bold">
+                <Lock className="w-3 h-3" />
+                Tài khoản cấp phép riêng
+              </div>
+              <p className="text-sm font-medium text-gray-600">
+                Liên hệ Zalo <span className="text-blue-600 font-bold">0915213717 - Đ. Thành</span> để mua tài khoản VIP
+              </p>
             </div>
           </div>
         </div>
