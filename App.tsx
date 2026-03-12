@@ -218,7 +218,10 @@ const App: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === 'VIP1' && password === '12345') {
+    if (
+      (username === 'VIP1' && password === '12345') ||
+      (username === 'vip2' && password === '0918688397')
+    ) {
       setIsAuthenticated(true);
       setLoginError('');
       // Save to session or local storage if persistence is desired, but keeping it simple for now
