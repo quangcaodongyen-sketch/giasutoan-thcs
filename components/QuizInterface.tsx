@@ -3,6 +3,11 @@ import { Clock, CheckCircle, XCircle, ChevronRight, AlertCircle, HelpCircle } fr
 import { QuizState, ThemeConfig, EducationLevel } from '../types';
 import { THEMES, DIFFICULTY_CONFIG } from '../constants';
 import MathRenderer from './MathRenderer';
+import confetti from 'canvas-confetti';
+
+// Preload sounds
+const correctSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
+const incorrectSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3');
 
 interface QuizInterfaceProps {
   state: QuizState;
@@ -46,7 +51,47 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ state, onAnswer, onNext, 
     const optionLetter = option.charAt(0); // Extract "A" from "A. Answer"
     setSelectedOption(optionLetter);
     setShowFeedback(true);
+    
+    // Check if correct
+    const isCorrect = currentQuestion.correctAnswer === optionLetter;
+    
+    if (isCorrect) {
+      correctSound.currentTime = 0;
+      correctSound.play().catch(e => console.log('Audio play failed', e)); // Catch in case of browser autoplay blocks
+      fireConfetti();
+    } else {
+      incorrectSound.currentTime = 0;
+      incorrectSound.play().catch(e => console.log('Audio play failed', e));
+    }
+
     onAnswer(currentQuestion.id, optionLetter);
+  };
+
+  const fireConfetti = () => {
+    const duration = 3000;
+    const end = Date.now() + duration;
+
+    const frame = () => {
+      confetti({
+        particleCount: 5,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+      });
+      confetti({
+        particleCount: 5,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    };
+    frame();
   };
 
   const formatTime = (seconds: number) => {
